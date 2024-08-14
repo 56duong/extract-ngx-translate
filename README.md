@@ -16,7 +16,7 @@
 You can install the package via npm:
 
 ```sh
-npm install extract-translations
+npm i @56duong/extract-ngx-translate
 ```
 
 
@@ -25,7 +25,7 @@ npm install extract-translations
 To run the script, use the following command:
 
 ```sh
-npx extract-translations <inputDir> <outputPaths...> [options]
+npx @56duong/extract-ngx-translate <inputDir> <outputPaths...> [options]
 ```
 
 
@@ -81,11 +81,11 @@ const regexMap = {
 ### Example
 
 ```sh
-npx ngx-translate-extract ./src/app ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --file-types .ts,.html --key-as-default-value-remove-underscore --uppercase-first-value
+npx @56duong/extract-ngx-translate ./src/app ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --file-types .ts,.html --key-as-default-value-remove-underscore --uppercase-first-value
 ```
 or
 ```sh
-npx ngx-translate-extract ./src/app ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --file-types .ts,.html -kr -ufv
+npx @56duong/extract-ngx-translate ./src/app ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --file-types .ts,.html -kr -ufv
 ```
 This command will:
 
