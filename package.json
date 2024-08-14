@@ -18,9 +18,12 @@
     "extract"
   ],
   "author": "Nguyen Ngoc Thuy Duong",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/56duong/extract-ngx-translate/issues"
   },
-  "homepage": "https://github.com/56duong/extract-ngx-translate#readme"
+  "homepage": "https://github.com/56duong/extract-ngx-translate#readme",
+  "dependencies": {
+    "yargs": "^17.0.1"
+  }
 }

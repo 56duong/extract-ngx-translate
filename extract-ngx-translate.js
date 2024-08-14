@@ -168,25 +168,20 @@ function extractTranslations() {
   }
 
   console.log(`Reading files from directory: ${inputDir}`);
+  
   const files = readFiles(inputDir, argv.fileTypes);
-  console.log(`Found files: ${files}`);
-
   const newTranslations = {};
 
+  allKeyCount = 0;
   files.forEach(file => {
     const keys = extractKeysFromFile(file);
     console.log(`Extracted keys from ${file}: ${keys}`);
     keys.forEach(key => {
-      let transformedKey = key;
-      if (argv.u) {
-        transformedKey = key.toUpperCase();
-      } else if (argv.c) {
-        transformedKey = capitalizeWords(key);
-      } else if (argv.l) {
-        transformedKey = key.toLowerCase();
-      }
+      allKeyCount++;
 
+      let transformedKey = key;
       let value = '';
+
       if (argv.k) {
         value = transformedKey;
       } else if (argv.ki) {
@@ -197,6 +192,14 @@ function extractTranslations() {
         value = argv.d;
       } else if (argv.kr) {
         value = transformedKey.replace(/_/g, ' ');
+      }
+
+      if (argv.u) {
+        value = value.toUpperCase();
+      } else if (argv.c) {
+        value = capitalizeWords(value);
+      } else if (argv.l) {
+        value = value.toLowerCase();
       }
 
       if (argv.ufv && typeof value === 'string') {
@@ -212,7 +215,7 @@ function extractTranslations() {
     });
   });
 
-  console.log(`New translations: ${JSON.stringify(newTranslations, null, 2)}`);
+  console.log(`________________________________________________________________________________________________________\n\nTotal keys found: ${allKeyCount}\n`);
 
   outputPaths.forEach(outputFilePath => {
     let existingTranslations = {};
