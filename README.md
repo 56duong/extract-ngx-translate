@@ -25,21 +25,19 @@ npm i @56duong/extract-ngx-translate
 To run the script, use the following command:
 
 ```sh
-npx @56duong/extract-ngx-translate <inputDir> <outputPaths...> [options]
+npx @56duong/extract-ngx-translate <inputDir> <fileTypes> <outputPaths...> [options]
 ```
 
 
 ### Parameters
 
 - `<inputDir>`: The directory containing the source files to scan for translation keys.
+- `<fileTypes>`: A string specifying the file types to process (default: '.ts,.html').
 - `<outputPaths...>`: One or more paths to the translation JSON files to update.
 
 
 ### Options
 ```
-File Types
-  --file-types, -f: Specify file types to process (default: ['.html', '.ts']).
-
 Default Value Options
   --key-as-default-value, -k: Use key as default value.
   --null-as-default-value, -n: Use null as default value.
@@ -81,11 +79,11 @@ const regexMap = {
 ### Example
 
 ```sh
-npx @56duong/extract-ngx-translate ./src/app ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --file-types .ts,.html --key-as-default-value-remove-underscore --uppercase-first-value
+npx @56duong/extract-ngx-translate ./src/app '.ts,.html' ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --key-as-default-value-remove-underscore --uppercase-first-value
 ```
 or
 ```sh
-npx @56duong/extract-ngx-translate ./src/app ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --file-types .ts,.html -kr -ufv
+npx @56duong/extract-ngx-translate ./src/app '.ts,.html' ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json -kr -ufv
 ```
 This command will:
 
