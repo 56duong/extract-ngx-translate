@@ -1,6 +1,6 @@
 {
   "name": "@56duong/extract-ngx-translate",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Extracting translation keys from Angular HTML and TypeScript files when you use the ngx-translate.",
   "main": "extract-ngx-translate.js",
   "scripts": {
