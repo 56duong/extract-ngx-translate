@@ -1,0 +1,26 @@
+{
+  "name": "@56duong/extract-ngx-translate",
+  "version": "1.0.0",
+  "description": "Extracting translation keys from Angular HTML and TypeScript files when you use the ngx-translate.",
+  "main": "extract-ngx-translate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/56duong/extract-ngx-translate.git"
+  },
+  "keywords": [
+    "ngx-translate",
+    "angular",
+    "ngx-translate-extract",
+    "translation",
+    "extract"
+  ],
+  "author": "Nguyen Ngoc Thuy Duong",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/56duong/extract-ngx-translate/issues"
+  },
+  "homepage": "https://github.com/56duong/extract-ngx-translate#readme"
+}
