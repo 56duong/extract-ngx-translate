@@ -25,31 +25,37 @@ npm i @56duong/extract-ngx-translate
 To run the script, use the following command:
 
 ```sh
-npx @56duong/extract-ngx-translate <inputDir> <fileTypes> <outputPaths...> [options]
+npx @56duong/extract-ngx-translate <inputDir> <outputPaths...> [options]
 ```
+By default, the script will add keys that do not exist or only update keys that do not have a value, the script will delete keys that no longer exist in the source files unless they have a `_preserve` key set to `true` to prevent removal. 
 
 
 ### Parameters
 
 - `<inputDir>`: The directory containing the source files to scan for translation keys.
-- `<fileTypes>`: A string specifying the file types to process (default: '.ts,.html').
 - `<outputPaths...>`: One or more paths to the translation JSON files to update.
 
 
 ### Options
 ```
+File Type Option
+  --file-types, -f: A string specifying the file types to process (default: '.ts,.html').
+
 Default Value Options
-  --key-as-default-value, -k: Use key as default value.
-  --null-as-default-value, -n: Use null as default value.
-  --string-as-default-value, -d: Use a specific string as default value.
-  --key-as-default-value-remove-underscore, -kr: Use key as default value and remove underscores.
-  If no specific value transformation argument (`-k`, `-n`, `-d`, `-kr`) is provided, the default value is an empty string (`''`).
+  --key-as-default-value, --kd: Use key as default value.
+  --null-as-default-value, --nd: Use null as default value.
+  --string-as-default-value, --esd: Use a specific string as default value.
+  If no specific value transformation argument (`--kd`, `--nd`, `--esd`) is provided, the default value is an empty string (`''`).
 
 Key Transformation Options
-  --uppercase, -u: Convert value to uppercase.
-  --capitalize, -c: Capitalize the first letter of every word in the value.
-  --lowercase, -l: Convert value to lowercase.
-  --uppercase-first-value, -ufv: Uppercase the first letter of the value.
+  --remove-underscore, --ru: Use key as default value and remove underscores.
+  --uppercase, --up: Convert key to uppercase.
+  --capitalize, --c: Capitalize the first letter of every word in the key.
+  --lowercase, --l: Convert key to lowercase.
+  --uppercase-first-value, --ufv: Uppercase the first letter of the value.
+
+Overwrite Option
+  --overwrite, --o: Overwrite existing translation values with new ones. By default, the script only updates existing keys if they do not have a value. The --overwrite option cannot overwrite keys with the `_preserve` key set to `true`.
 ```
 
 
@@ -79,16 +85,16 @@ const regexMap = {
 ### Example
 
 ```sh
-npx @56duong/extract-ngx-translate ./src/app '.ts,.html' ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --key-as-default-value-remove-underscore --uppercase-first-value
+npx @56duong/extract-ngx-translate ./src/app ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --file-types='.ts,.html' --key-as-default-value --uppercase-first-value --remove-underscore
 ```
 or
 ```sh
-npx @56duong/extract-ngx-translate ./src/app '.ts,.html' ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json -kr -ufv
+npx @56duong/extract-ngx-translate ./src/app ./src/assets/i18n/en.json ./src/assets/i18n/fr.json ./src/assets/i18n/vi.json --file-types='.ts,.html' --kd --ufv --ru
 ```
 This command will:
 
 - Scan the `./src/app` directory for `.ts` and `.html` files.
-- Extract translation keys and apply the specified transformations.
+- Extract translation keys and apply the specified transformations. Use key as default value, uppercase the first letter of the value and remove underscores and 
 - Update the `en.json`, `fr.json`, and `vi.json` files with the new keys and values.
 
 

@@ -72,32 +72,40 @@ function setNestedKey(obj, key, value) {
 }
 
 // Function to clean up existing translations by removing non-existing keys
-function cleanTranslations(existing, newKeys) {
+function cleanTranslations(existing, newKeys, overwriteAll) {
   for (const key in existing) {
     if (typeof existing[key] === 'object' && existing[key] !== null) {
+      if (existing[key]._preserve) {
+        continue; // Skip this object if it contains the _preserve field
+      }
       if (!newKeys[key]) {
         delete existing[key];
       } else {
-        cleanTranslations(existing[key], newKeys[key]);
+        cleanTranslations(existing[key], newKeys[key], overwriteAll);
       }
     } else {
-      if (!newKeys[key]) {
+      if (!newKeys[key] && newKeys[key] !== null) {
         delete existing[key];
+      } else if (overwriteAll) {
+        existing[key] = newKeys[key];
       }
     }
   }
 }
 
 // Function to merge new keys into existing translations
-function mergeTranslations(existing, newKeys) {
+function mergeTranslations(existing, newKeys, overwriteAll) {
   for (const key in newKeys) {
     if (typeof newKeys[key] === 'object' && newKeys[key] !== null) {
+      if (existing[key] && existing[key]._preserve) {
+        continue; // Skip this object if it contains the _preserve field
+      }
       if (!existing[key]) {
         existing[key] = {};
       }
       mergeTranslations(existing[key], newKeys[key]);
     } else {
-      if (!existing[key]) {
+      if (overwriteAll || !existing[key]) {
         existing[key] = newKeys[key];
       }
     }
@@ -108,32 +116,27 @@ function mergeTranslations(existing, newKeys) {
 function extractTranslations() {
   const argv = yargs(hideBin(process.argv))
     .option('key-as-default-value', {
-      alias: 'k',
+      alias: 'kd',
       type: 'boolean',
       description: 'Use key as default value'
     })
-    .option('key-as-initial-default-value', {
-      alias: 'ki',
-      type: 'boolean',
-      description: 'Use key as initial default value'
-    })
     .option('null-as-default-value', {
-      alias: 'n',
+      alias: 'nd',
       type: 'boolean',
       description: 'Use null as default value'
     })
     .option('string-as-default-value', {
-      alias: 'd',
+      alias: 'esd',
       type: 'string',
-      description: 'Use string as default value'
+      description: 'Use empty string as default value'
     })
-    .option('key-as-default-value-remove-underscore', {
-      alias: 'kr',
+    .option('remove-underscore', {
+      alias: 'ru',
       type: 'boolean',
       description: 'Use key as default value and remove underscores'
     })
     .option('uppercase', {
-      alias: 'u',
+      alias: 'up',
       type: 'boolean',
       description: 'Convert key to uppercase'
     })
@@ -154,9 +157,16 @@ function extractTranslations() {
     })
     .option('file-types', {
       alias: 'f',
-      type: 'array',
+      type: 'string',
       description: 'Specify file types to process',
-      default: ['.html', '.ts']
+      default: '.html,.ts',
+      coerce: arg => arg.split(',')
+    })
+    .option('overwrite', {
+      alias: 'o',
+      type: 'boolean',
+      default: false,
+      description: 'Overwrite all existing translations'
     })
     .demandCommand(2)
     .argv;
@@ -184,19 +194,24 @@ function extractTranslations() {
       let transformedKey = key;
       let value = '';
 
-      if (argv.k) {
+      if (argv.kd) {
         value = transformedKey;
-      } else if (argv.ki) {
-        value = transformedKey;
-      } else if (argv.n) {
+      } else if (argv.nd) {
         value = null;
-      } else if (argv.d) {
-        value = argv.d;
-      } else if (argv.kr) {
+      } else if (argv.esd) {
+        value = argv.esd;
+      } 
+      
+      if (argv.ru) {
         value = transformedKey.replace(/_/g, ' ');
       }
 
-      if (argv.u) {
+      // Remove prefix from the value if it contains a dot
+      if (value && typeof value === 'string' && value.includes('.')) {
+        value = value.substring(value.lastIndexOf('.') + 1);
+      }
+
+      if (argv.up) {
         value = value.toUpperCase();
       } else if (argv.c) {
         value = capitalizeWords(value);
@@ -225,8 +240,8 @@ function extractTranslations() {
       existingTranslations = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
     }
 
-    cleanTranslations(existingTranslations, newTranslations);
-    mergeTranslations(existingTranslations, newTranslations);
+    cleanTranslations(existingTranslations, newTranslations, argv.o);
+    mergeTranslations(existingTranslations, newTranslations, argv.o);
 
     fs.writeFileSync(outputFilePath, JSON.stringify(existingTranslations, null, 2));
     console.log(`Unused keys removed, new keys added, and updated translations written to ${outputFilePath}`);
