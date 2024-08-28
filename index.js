@@ -187,7 +187,6 @@ function extractTranslations() {
   allKeyCount = 0;
   files.forEach(file => {
     const keys = extractKeysFromFile(file);
-    console.log(`Extracted keys from ${file}: ${keys}`);
     keys.forEach(key => {
       allKeyCount++;
 
@@ -203,7 +202,7 @@ function extractTranslations() {
       } 
       
       if (argv.ru) {
-        value = transformedKey.replace(/_/g, ' ');
+        value = value ? value.replace(/_/g, ' ') : value;
       }
 
       // Remove prefix from the value if it contains a dot

@@ -94,7 +94,7 @@ npx @56duong/extract-ngx-translate ./src/app ./src/assets/i18n/en.json ./src/ass
 This command will:
 
 - Scan the `./src/app` directory for `.ts` and `.html` files.
-- Extract translation keys and apply the specified transformations. Use key as default value, uppercase the first letter of the value and remove underscores and 
+- Extract translation keys and apply the specified transformations. Use key as default value, uppercase the first letter of the value and remove underscores. 
 - Update the `en.json`, `fr.json`, and `vi.json` files with the new keys and values.
 
 
