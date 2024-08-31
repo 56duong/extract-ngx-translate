@@ -18,6 +18,7 @@
     "angular",
     "ngx-translate-extract",
     "translation",
+    "i18n",
     "extract"
   ],
   "author": "Nguyen Ngoc Thuy Duong",

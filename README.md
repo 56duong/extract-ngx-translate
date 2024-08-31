@@ -56,6 +56,9 @@ Key Transformation Options
 
 Overwrite Option
   --overwrite, --o: Overwrite existing translation values with new ones. By default, the script only updates existing keys if they do not have a value. The --overwrite option cannot overwrite keys with the `_preserve` key set to `true`.
+
+Translate Service Identifier Option
+  --translate-service, --ts: Specify the name of the translation service to use in TypeScript files (default: 'translateService'). Example: --translate-service='translateService'.
 ```
 
 
@@ -63,8 +66,8 @@ Overwrite Option
 The script uses regular expressions to identify translation keys in your source files. Below is the regexMap constant that defines the patterns for different file types:
 ```
 const regexMap = {
-  '.html': /['"]([^'"]*)['"]\s*\|\s*translate/g,
-  '.ts': /translateService\.instant\(\s*['"]([^'"]*)['"]\s*\)/g,
+  '.html': /'"['"]\s*\|\s*translate/g,
+  '.ts': new RegExp(`${translateService}\\.instant\\(\\s*'"['"]\\s*\\)`, 'g'),
 };
 ```
 
@@ -76,10 +79,10 @@ const regexMap = {
   - The regular expression is flexible with spaces, so it will also match ```<p>{{'hello_world'|translate}}</p>```.
 
 - TypeScript Files (.ts):
-  - The regular expression ```/translateService\.instant\(\s*'"['"]\s*\)/g``` is used to match translation keys within TypeScript files.
-  - It looks for strings enclosed in single or double quotes that are passed as arguments to the translateService.instant method.
+  - The regular expression ```new RegExp(`${translateService}\\.instant\\(\\s*['"]([^'"]*)['"]\\s*\\)`, 'g')``` is used to match translation keys within TypeScript files.
+  - It looks for strings enclosed in single or double quotes that are passed as arguments to the specified translation service's `instant` method.
   - Example: ```const hello = this.translateService.instant('hello_world');``` will match ```'hello_world'```.
-  - Note: Make sure to name the service translateService as shown in the example above. 
+  - Note: The default translation service identifier is `translateService`, but you can specify a different identifier using the `--translate-service` option.
 
 
 ### Example
@@ -113,7 +116,7 @@ export class ExampleComponent {
   }
 }
 
-Note: Make sure to name the service translateService as shown in the example above.
+Note: The default translation service identifier is `translateService`, but you can specify a different identifier using the `--translate-service` option.
 ```
 
 #### HTML File (example.component.html)

@@ -20,12 +20,6 @@ function insertSpacesBeforeNumbers(str) {
   return str.replace(/(\d+)/g, ' $1 ').replace(/\s+/g, ' ').trim();
 }
 
-// Regular expressions to match translation keys
-const regexMap = {
-  '.html': /['"]([^'"]*)['"]\s*\|\s*translate/g,
-  '.ts': /translateService\.instant\(\s*['"]([^'"]*)['"]\s*\)/g,
-};
-
 // Function to recursively read files from a directory
 function readFiles(dir, fileTypes, fileList = []) {
   const files = fs.readdirSync(dir);
@@ -41,7 +35,7 @@ function readFiles(dir, fileTypes, fileList = []) {
 }
 
 // Function to extract translation keys from a file
-function extractKeysFromFile(filePath) {
+function extractKeysFromFile(filePath, regexMap) {
   const content = fs.readFileSync(filePath, 'utf8');
   const keys = [];
   let match;
@@ -168,11 +162,22 @@ function extractTranslations() {
       default: false,
       description: 'Overwrite all existing translations'
     })
-    .demandCommand(2)
+    .option('translate-service', {
+      alias: 'ts',
+      type: 'string',
+      description: 'Specify the translation service identifier',
+      default: 'translateService'
+    })
+    .demandCommand(1)
     .argv;
 
   const inputDir = argv._[0];
   const outputPaths = argv._.slice(1); // Multiple output paths
+  const translateService = argv['translate-service'];
+  const regexMap = {
+    '.html': /['"]([^'"]*)['"]\s*\|\s*translate/g,
+    '.ts': new RegExp(`${translateService}\\.instant\\(\\s*['"]([^'"]*)['"]\\s*\\)`, 'g'),
+  };
 
   if (!inputDir || outputPaths.length === 0) {
     console.error('Usage: node extract-translations.js <inputDir> <outputPaths...> [options]');
@@ -186,7 +191,7 @@ function extractTranslations() {
 
   allKeyCount = 0;
   files.forEach(file => {
-    const keys = extractKeysFromFile(file);
+    const keys = extractKeysFromFile(file, regexMap);
     keys.forEach(key => {
       allKeyCount++;
 
